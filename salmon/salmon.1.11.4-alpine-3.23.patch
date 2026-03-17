@@ -1,0 +1,20 @@
+--- salmon-1.11.4_new/src/backtrace.cc	2026-03-16 17:07:51.360244904 +0100
++++ salmon-1.11.4/src/backtrace.cc	2026-03-17 09:37:14.555440295 +0100
+@@ -8,15 +8,19 @@
+
+ #include <iostream>
+ #include <stdexcept>
++#ifdef __GLIBC__
+ #include <execinfo.h>
++#endif
+ #include <stdlib.h>
+ #include <typeinfo>
+ #include <cxxabi.h>
+
+ void print_backtrace() {
++#ifdef __GLIBC__
+   void  *trace_elems[20];
+   int    trace_elem_count(backtrace(trace_elems, 20));
+   backtrace_symbols_fd(trace_elems, trace_elem_count, 2);
++#endif
+ }
