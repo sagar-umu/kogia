@@ -21,12 +21,9 @@ RUN patch -p0 < /build/salmon-1.11.4-alpine-3.23.patch
 
 WORKDIR /build/salmon-${SALMON_VERSION}/build
 
-RUN CXXFLAGS='-fpermissive -D"u_int64_t=uint64_t" -D"ACCESSPERMS=(S_IRWXU|S_IRWXG|S_IR
-WXO)"' \
-    CFLAGS='-fpermissive -D"u_int64_t=uint64_t" -D"ACCESSPERMS=(S_IRWXU|S_IRWXG|S_IRWX
-O)"' \
-    cmake -DNO_IPO=ON -DCURL_LIBRARY=/usr/lib/libcurl.so -DIconv_IS_BUILT_IN=TRUE .. &
-& \
+RUN CXXFLAGS='-fpermissive -D"u_int64_t=uint64_t" -D"ACCESSPERMS=(S_IRWXU|S_IRWXG|S_IRWXO)"' \
+    CFLAGS='-fpermissive -D"u_int64_t=uint64_t" -D"ACCESSPERMS=(S_IRWXU|S_IRWXG|S_IRWXO)"' \
+    cmake -DNO_IPO=ON -DCURL_LIBRARY=/usr/lib/libcurl.so -DIconv_IS_BUILT_IN=TRUE .. && \
     make -j${BUILD_NCPU}
 RUN strip src/salmon
 
@@ -36,8 +33,7 @@ ARG SALMON_VERSION=1.11.4
 
 WORKDIR /
 RUN apk add --no-cache bash
-COPY --from=alpine-build-salmon /build/salmon-${SALMON_VERSION}/build/src/salmon /usr/
-local/bin/salmon
+COPY --from=alpine-build-salmon /build/salmon-${SALMON_VERSION}/build/src/salmon /usr/local/bin/salmon
 RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/main >> /etc/apk/repositories
 RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories
 RUN apk add --no-cache libstdc++ libc6-compat libtbb
