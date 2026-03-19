@@ -1,7 +1,7 @@
-ALPINE=3.14
+ALPINE=3.23
 EXEC=salmon
-VERSION=1.8.0
-SOURCES=Dockerfile Makefile test.py
+VERSION=1.11.4
+SOURCES=Dockerfile Makefile test.py salmon-1.11.4-alpine-3.23.patch
 
 all: release
 
