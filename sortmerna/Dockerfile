@@ -1,26 +1,18 @@
-ARG ALPINE_VERSION=3.13
-
-FROM alpine:${ALPINE_VERSION} AS alpine-build-sortmerna
-
-ARG ALPINE_VERSION=3.13
-ARG SORTMERNA_VERSION=4.3.6
-
+ARG DEBIAN_VERSION=trixie-slim
+FROM debian:${DEBIAN_VERSION} AS build-sortmerna
+ARG SORTMERNA_VERSION=4.4.0
 WORKDIR /build
-RUN apk update && apk add curl bash build-base
-
-WORKDIR /build
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        curl ca-certificates bash binutils \
+    && rm -rf /var/lib/apt/lists/*
 RUN curl -O -L https://github.com/biocore/sortmerna/releases/download/v${SORTMERNA_VERSION}/sortmerna-${SORTMERNA_VERSION}-Linux.sh
 RUN bash sortmerna-${SORTMERNA_VERSION}-Linux.sh --skip-license
 RUN strip /build/bin/sortmerna
 
-FROM alpine:${ALPINE_VERSION}
-
-ARG SORTMERNA_VERSION=4.3.6
-
+FROM debian:${DEBIAN_VERSION}
+ARG SORTMERNA_VERSION=4.4.0
 WORKDIR /
-RUN apk add --no-cache bash
-COPY --from=alpine-build-sortmerna /build/bin/sortmerna /usr/local/bin/sortmerna
+COPY --from=build-sortmerna /build/bin/sortmerna /usr/local/bin/sortmerna
 ENTRYPOINT ["/usr/local/bin/sortmerna"]
-
 LABEL maintainer='github.com/bschiffthaler'
 LABEL software.version=${SORTMERNA_VERSION}
