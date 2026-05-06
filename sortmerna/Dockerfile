@@ -1,7 +1,7 @@
 ARG ALPINE_VERSION=3.23
 
 FROM alpine:${ALPINE_VERSION} AS alpine-build-sortmerna
-ARG SORTMERNA_VERSION=4.4.0
+ARG SORTMERNA_VERSION=5.0.0
 WORKDIR /build
 RUN apk update && apk add curl bash build-base
 RUN curl -O -L https://github.com/biocore/sortmerna/releases/download/v${SORTMERNA_VERSION}/sortmerna-${SORTMERNA_VERSION}-Linux.sh
@@ -17,7 +17,7 @@ RUN mkdir -p /glibc-libs && \
 
 # Final Alpine image with bundled glibc libs
 FROM alpine:${ALPINE_VERSION}
-ARG SORTMERNA_VERSION=4.4.0
+ARG SORTMERNA_VERSION=5.0.0
 WORKDIR /
 RUN apk add --no-cache bash
 RUN mkdir -p /lib/glibc-compat /lib64
